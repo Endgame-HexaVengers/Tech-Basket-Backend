@@ -1,1 +1,1 @@
-import { Product } from "./products.interface.js"; d
+import { Product } from "./products.interface.js";
