@@ -18,7 +18,7 @@ const productSchema = new Schema<IProduct>(
       required: true,
     },
   },
-  { timestamps: true },
+  { timestamps: true, collection: "TechBasket_all data" },
 );
 
 export const ProductModel = model<IProduct>("Product", productSchema);

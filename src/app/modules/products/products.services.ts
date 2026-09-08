@@ -6,7 +6,7 @@ const createProduct = async (payload: IProduct) => {
 };
 
 const getProducts = async () => {
-	return ProductModel.find().sort({ createdAt: -1 });
+	return ProductModel.find().sort({ productId: 1 }).lean();
 };
 
 const getProductById = async (id: string) => {
