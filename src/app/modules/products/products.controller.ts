@@ -18,6 +18,7 @@ const createProduct = async (req: Request, res: Response) => {
 
 const getProducts = async (_req: Request, res: Response) => {
 	const result = await ProductServices.getProducts();
+	
 	res.status(200).json({ success: true, data: result });
 };
 
