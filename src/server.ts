@@ -8,9 +8,9 @@ import app from './app.js'
 dotenv.config()
 
 let server: Server
-const port = Number(process.env.PORT) || 5000
+const port = Number(process.env.PORT)
 
-const mongodbUri = process.env.MONGODB_URL as string
+const mongodbUri = process.env.MONGODB_URI as string
 
 const startServer = async () => {
     try {
