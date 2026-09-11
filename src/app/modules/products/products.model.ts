@@ -1,24 +1,39 @@
-import { model, Schema } from "mongoose";
+import { Schema, model } from "mongoose";
 import type { IProduct } from "./products.interface.js";
 
 const productSchema = new Schema<IProduct>(
   {
-    sku: { type: String, required: true, unique: true, trim: true },
-    title: { type: String, required: true, trim: true },
-    brand: { type: Schema.Types.ObjectId, ref: "Brand", required: true },
-    category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
-    basePrice: { type: Number, required: true, min: 0 },
-    warrantyMonths: { type: Number, required: true, min: 0 },
+    productTitle: { type: String, trim: true },
+    title: { type: String, trim: true },
+    sku: { type: String, required: true, trim: true },
+    color: { type: String, trim: true },
+    brandId: { type: String, trim: true },
+    categoryId: { type: String, trim: true },
+    brand: { type: Schema.Types.Mixed, ref: "Brand" },
+    category: { type: Schema.Types.Mixed, ref: "Category" },
+    basePrice: { type: Number, min: 0 },
+    costPrice: { type: Number, min: 0 },
+    warrantyPeriod: { type: Number },
+    warrantyUnit: { type: String },
+    warrantyMonths: { type: Number, min: 0 },
+    hasSerialNumber: { type: Boolean, default: true },
     description: { type: String, trim: true },
     imageUrl: { type: String, trim: true },
     status: {
       type: String,
-      enum: ["ACTIVE", "DISCONTINUED", "OUT_OF_STOCK"],
       default: "ACTIVE",
-      required: true,
     },
+    approvalStatus: { type: String },
+    createdBy: { type: String },
+    approvedBy: { type: String, default: null },
+    approvedAt: { type: Date, default: null },
+    rejectionReason: { type: String, default: null },
   },
-  { timestamps: true, collection: "TechBasket_all data" },
+  {
+    timestamps: true,
+    collection: "TechBasket_all data",
+    strict: false,
+  }
 );
 
 export const ProductModel = model<IProduct>("Product", productSchema);

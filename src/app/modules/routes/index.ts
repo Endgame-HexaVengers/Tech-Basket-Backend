@@ -1,12 +1,42 @@
 import { Router } from "express";
+import aiRouter from "../ai/ai.route.js";
+import auditLogRouter from "../auditLogs/auditLogs.route.js";
+import branchRouter from "../branches/branches.route.js";
+import brandRouter from "../brands/brands.route.js";
+import categoryRouter from "../categories/categories.route.js";
+import customerRouter from "../customers/customers.route.js";
+import dashboardRouter from "../dashboard/dashboard.route.js";
+import inventoryRouter from "../inventory/inventory.route.js";
 import productRouter from "../products/products.route.js";
-
-
+import purchaseRouter from "../purchases/purchases.route.js";
+import rmaRouter from "../rma/rma.route.js";
+import rmaReplacementRouter from "../rmaReplacements/rmaReplacements.route.js";
+import saleRouter from "../sales/sales.route.js";
+import supplierClaimRouter from "../supplierClaims/supplierClaims.route.js";
+import supplierRouter from "../suppliers/suppliers.route.js";
+import transferRouter from "../transfers/transfers.route.js";
+import userRouter from "../users/users.route.js";
+import warrantyRouter from "../warranties/warranties.route.js";
 
 const router = Router();
 
+router.use("/users", userRouter);
+router.use("/branches", branchRouter);
+router.use("/brands", brandRouter);
+router.use("/categories", categoryRouter);
+router.use("/customers", customerRouter);
+router.use("/suppliers", supplierRouter);
 router.use("/products", productRouter);
-// router.use("/brands", brandRouter);
-// router.use("/categories", categoryRouter);
+router.use("/inventory", inventoryRouter);
+router.use("/purchases", purchaseRouter);
+router.use("/transfers", transferRouter);
+router.use("/sales", saleRouter);
+router.use("/warranties", warrantyRouter);
+router.use("/rma", rmaRouter);
+router.use("/supplier-claims", supplierClaimRouter);
+router.use("/rma-replacements", rmaReplacementRouter);
+router.use("/dashboard", dashboardRouter);
+router.use("/ai", aiRouter);
+router.use("/audit-logs", auditLogRouter);
 
 export default router;
