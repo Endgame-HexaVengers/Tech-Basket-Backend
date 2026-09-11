@@ -1,70 +1,66 @@
 import type { Request, Response } from "express";
+import { catchAsync } from "../../utils/catchAsync.js";
+import { sendResponse } from "../../utils/sendResponse.js";
 import { ProductServices } from "./products.services.js";
 
-const getProductId = (req: Request, res: Response) => {
-	const { id } = req.params;
-	if (typeof id !== "string") {
-		res.status(400).json({ success: false, message: "Product id is required" });
-		return null;
-	}
+const createProduct = catchAsync(async (req: Request, res: Response) => {
+  const result = await ProductServices.createProduct(req.body);
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: "Product created successfully",
+    data: result,
+  });
+});
 
-	return id;
-};
+const getProducts = catchAsync(async (req: Request, res: Response) => {
+  const { products, pagination } = await ProductServices.getProducts(req.query);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Products retrieved successfully",
+    data: products,
+    pagination,
+  });
+});
 
-const createProduct = async (req: Request, res: Response) => {
-	const result = await ProductServices.createProduct(req.body);
-	res.status(201).json({ success: true, data: result });
-};
+const getProductById = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const result = await ProductServices.getProductById(id);
+  sendResponse(res, {
+    statusCode: result ? 200 : 404,
+    success: !!result,
+    message: result ? "Product retrieved successfully" : "Product not found",
+    data: result,
+  });
+});
 
-const getProducts = async (_req: Request, res: Response) => {
-	const result = await ProductServices.getProducts();
-	
-	res.status(200).json({ success: true, data: result });
-};
+const updateProduct = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const result = await ProductServices.updateProduct(id, req.body);
+  sendResponse(res, {
+    statusCode: result ? 200 : 404,
+    success: !!result,
+    message: result ? "Product updated successfully" : "Product not found",
+    data: result,
+  });
+});
 
-const getProductById = async (req: Request, res: Response) => {
-	const id = getProductId(req, res);
-	if (!id) return;
-
-	const result = await ProductServices.getProductById(id);
-	if (!result) {
-		res.status(404).json({ success: false, message: "Product not found" });
-		return;
-	}
-
-	res.status(200).json({ success: true, data: result });
-};
-
-const updateProduct = async (req: Request, res: Response) => {
-	const id = getProductId(req, res);
-	if (!id) return;
-
-	const result = await ProductServices.updateProduct(id, req.body);
-	if (!result) {
-		res.status(404).json({ success: false, message: "Product not found" });
-		return;
-	}
-
-	res.status(200).json({ success: true, data: result });
-};
-
-const deleteProduct = async (req: Request, res: Response) => {
-	const id = getProductId(req, res);
-	if (!id) return;
-
-	const result = await ProductServices.deleteProduct(id);
-	if (!result) {
-		res.status(404).json({ success: false, message: "Product not found" });
-		return;
-	}
-
-	res.status(200).json({ success: true, message: "Product deleted successfully" });
-};
+const deleteProduct = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const result = await ProductServices.deleteProduct(id);
+  sendResponse(res, {
+    statusCode: result ? 200 : 404,
+    success: !!result,
+    message: result ? "Product deleted successfully" : "Product not found",
+    data: result,
+  });
+});
 
 export const ProductControllers = {
-	createProduct,
-	getProducts,
-	getProductById,
-	updateProduct,
-	deleteProduct,
+  createProduct,
+  getProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
 };
