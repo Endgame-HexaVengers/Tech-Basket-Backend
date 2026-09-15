@@ -6,14 +6,16 @@ import { ProductModel } from "../app/modules/products/products.model.js";
 
 dotenv.config();
 
-const mongodbUri =
-  process.env.MONGODB_URL ||
-  "mongodb+srv://TechBasket:DGSiflfSApQP7zPw@cluster0.3kbubif.mongodb.net/TechBasket?appName=Cluster0";
+const mongodbUri = process.env.MONGODB_URL;
+
+if (!mongodbUri) {
+  throw new Error("Environment variable MONGODB_URL must be set");
+}
 
 const ingestLegacyData = async () => {
   try {
     console.log("Connecting to MongoDB for legacy ingestion...");
-    await mongoose.connect(mongodbUri);
+    await mongoose.connect(mongodbUri as string);
     const db = mongoose.connection.db;
     if (!db) {
       throw new Error("Failed to access database");
