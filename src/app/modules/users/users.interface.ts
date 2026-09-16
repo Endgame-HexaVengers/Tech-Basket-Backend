@@ -4,6 +4,7 @@ export type UserRole = "ADMIN" | "MANAGER" | "SALES" | "INVENTORY" | "SUPPORT";
 
 export interface IUser {
   name: string;
+  username?: string;
   email: string;
   password?: string;
   role: UserRole;
@@ -11,6 +12,12 @@ export interface IUser {
   phone?: string;
   image?: string;
   status: "ACTIVE" | "INACTIVE";
+}
+
+export interface ICreateUserPayload extends Omit<IUser, "role" | "status"> {
+  role?: UserRole | string;
+  status?: IUser["status"];
+  confirmPassword?: string;
 }
 
 export interface ILoginPayload {

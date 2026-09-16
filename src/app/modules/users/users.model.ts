@@ -5,6 +5,7 @@ import type { IUser } from "./users.interface.js";
 const userSchema = new Schema<IUser>(
   {
     name: { type: String, required: true, trim: true },
+    username: { type: String, trim: true, lowercase: true, unique: true, sparse: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, select: false },
     role: {

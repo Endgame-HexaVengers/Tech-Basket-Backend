@@ -1,18 +1,43 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import AppError from "../../../errors/AppError.js";
-import type { ILoginPayload, IUser } from "./users.interface.js";
+import type { ICreateUserPayload, ILoginPayload, IUser, UserRole } from "./users.interface.js";
 import { UserModel } from "./users.model.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "techbasket_jwt_secret_key_2026";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 
-const createUser = async (payload: IUser) => {
-  const existing = await UserModel.findOne({ email: payload.email });
-  if (existing) {
-    throw new AppError(400, "User with this email already exists!");
+const createUser = async (payload: ICreateUserPayload) => {
+  const { confirmPassword, role, branch, ...userPayload } = payload;
+  const normalizedRole: UserRole | undefined = role
+    ? ({
+        "SYSTEM ADMIN": "ADMIN",
+        "STORE MANAGER": "MANAGER",
+        "INVENTORY STAFF": "INVENTORY",
+      }[role.trim().toUpperCase()] || role.trim().toUpperCase()) as UserRole
+    : undefined;
+
+  if (confirmPassword !== undefined && payload.password !== confirmPassword) {
+    throw new AppError(400, "Password and confirm password do not match!");
   }
-  const user = await UserModel.create(payload);
+
+  if (branch && !mongoose.isValidObjectId(branch)) {
+    throw new AppError(400, "Invalid branch id!");
+  }
+
+  const existing = await UserModel.findOne({
+    $or: [{ email: payload.email }, ...(payload.username ? [{ username: payload.username }] : [])],
+  });
+  if (existing) {
+    throw new AppError(400, existing.email === payload.email ? "User with this email already exists!" : "Username already exists!");
+  }
+
+  const user = await UserModel.create({
+    ...userPayload,
+    ...(normalizedRole ? { role: normalizedRole } : {}),
+    ...(branch ? { branch } : {}),
+  } as IUser);
   const userObj = user.toObject();
   delete userObj.password;
   return userObj;
