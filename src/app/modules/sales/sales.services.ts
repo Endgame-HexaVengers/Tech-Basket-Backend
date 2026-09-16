@@ -69,7 +69,15 @@ const createSale = async (payload: Partial<ISale>) => {
         }
       }
 
-      item.unitPrice = item.unitPrice || product.basePrice;
+      const unitPrice = item.unitPrice ?? product.basePrice;
+      if (unitPrice === undefined) {
+        throw new AppError(
+          400,
+          `Unit price is required for '${product.productTitle || product.title || "Product"}'`
+        );
+      }
+
+      item.unitPrice = unitPrice;
       const discount = item.discount || 0;
       item.total = item.quantity * item.unitPrice - discount;
       subtotal += item.total;
