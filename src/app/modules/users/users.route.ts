@@ -5,6 +5,7 @@ import { UserControllers } from "./users.controller.js";
 const userRouter = Router();
 
 userRouter.post("/register", UserControllers.createUser);
+userRouter.post("/", UserControllers.createUser);
 userRouter.post("/login", UserControllers.loginUser);
 userRouter.get("/me", auth(), UserControllers.getMe);
 
