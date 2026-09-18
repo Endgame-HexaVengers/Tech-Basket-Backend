@@ -7,7 +7,7 @@ const createBranch = async (payload: IBranch) => {
 
 const getBranches = async (query: Record<string, any>) => {
   const { search, status, page = 1, limit = 20 } = query;
-  const filter: Record<string, any> = {};
+  const filter: Record<string, any> = { status: status || "ACTIVE" };
 
   if (status) {
     filter.status = status;

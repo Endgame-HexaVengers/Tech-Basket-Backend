@@ -44,7 +44,7 @@ const seedDatabase = async () => {
     console.log("Seeding Branches...");
     const branches = await BranchModel.create([
       {
-        branchName: "Dhaka Central Hub",
+        branchName: "Dhaka Branch",
         branchCode: "BR-DHK-01",
         address: {
           street: "Road 11, Block D, Banani",
@@ -56,7 +56,7 @@ const seedDatabase = async () => {
         status: "ACTIVE",
       },
       {
-        branchName: "Chattogram Port Branch",
+        branchName: "Chattogram Branch",
         branchCode: "BR-CTG-01",
         address: {
           street: "Agrabad Commercial Area",
@@ -67,10 +67,23 @@ const seedDatabase = async () => {
         phone: "+880 1811-000002",
         status: "ACTIVE",
       },
+      {
+        branchName: "Tangail Branch",
+        branchCode: "BR-TGL-01",
+        address: {
+          street: "Dhaleshwari Road",
+          city: "Tangail",
+          state: "Dhaka Division",
+          zip: "1900",
+        },
+        phone: "+880 1911-000003",
+        status: "ACTIVE",
+      },
     ]);
 
     const dhakaBranch = branches[0]!;
     const ctgBranch = branches[1]!;
+    const tangailBranch = branches[2]!;
 
     // 2. Create Users
     console.log("Seeding Users...");
