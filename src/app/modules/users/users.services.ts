@@ -5,17 +5,26 @@ import AppError from "../../../errors/AppError.js";
 import type { ICreateUserPayload, ILoginPayload, IUser, UserRole } from "./users.interface.js";
 import { UserModel } from "./users.model.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "techbasket_jwt_secret_key_2026";
+const getJwtSecret = () => {
+  const secret = process.env.JWT_SECRET;
+
+  if (!secret) {
+    throw new Error("JWT_SECRET is not configured");
+  }
+
+  return secret;
+};
+
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 
 const createUser = async (payload: ICreateUserPayload) => {
   const { confirmPassword, role, branch, ...userPayload } = payload;
   const normalizedRole: UserRole | undefined = role
     ? ({
-        "SYSTEM ADMIN": "ADMIN",
-        "STORE MANAGER": "MANAGER",
-        "INVENTORY STAFF": "INVENTORY",
-      }[role.trim().toUpperCase()] || role.trim().toUpperCase()) as UserRole
+      "SYSTEM ADMIN": "ADMIN",
+      "STORE MANAGER": "MANAGER",
+      "INVENTORY STAFF": "INVENTORY",
+    }[role.trim().toUpperCase()] || role.trim().toUpperCase()) as UserRole
     : undefined;
 
   if (confirmPassword !== undefined && payload.password !== confirmPassword) {
@@ -65,9 +74,11 @@ const loginUser = async (payload: ILoginPayload) => {
       id: user._id.toString(),
       email: user.email,
       role: user.role,
-      branch: user.branch ? (user.branch as any)._id?.toString() || user.branch.toString() : undefined,
+      branch: user.branch
+        ? (user.branch as any)._id?.toString() || user.branch.toString()
+        : undefined,
     },
-    JWT_SECRET,
+    getJwtSecret(),
     { expiresIn: JWT_EXPIRES_IN as any }
   );
 
@@ -141,6 +152,12 @@ const deleteUser = async (id: string) => {
   return UserModel.findByIdAndDelete(id);
 };
 
+const deleteMyAccount = async (id: string) => {
+  const user = await UserModel.findByIdAndDelete(id);
+
+  return user;
+};
+
 export const UserServices = {
   createUser,
   loginUser,
@@ -148,4 +165,5 @@ export const UserServices = {
   getUserById,
   updateUser,
   deleteUser,
+  deleteMyAccount,
 };

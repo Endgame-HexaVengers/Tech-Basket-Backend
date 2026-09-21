@@ -64,6 +64,25 @@ const getMe = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const deleteMyAccount = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  if (!userId) {
+    sendResponse(res, {
+      statusCode: 401,
+      success: false,
+      message: "Unauthorized. Please login first.",
+    });
+    return;
+  }
+
+  const result = await UserServices.deleteMyAccount(userId);
+  sendResponse(res, {
+    statusCode: result ? 200 : 404,
+    success: !!result,
+    message: result ? "Account deleted successfully" : "User not found",
+  });
+});
+
 const updateUser = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id as string;
   const result = await UserServices.updateUser(id, req.body);
@@ -92,6 +111,7 @@ export const UserControllers = {
   getUsers,
   getUserById,
   getMe,
+  deleteMyAccount,
   updateUser,
   deleteUser,
 };

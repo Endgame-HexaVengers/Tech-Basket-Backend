@@ -18,21 +18,51 @@ declare global {
 }
 
 export const auth = (...requiredRoles: string[]) => {
-  return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
+  return async (
+    req: Request,
+    _res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const authHeader = req.headers.authorization;
+
       if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        throw new AppError(401, "You are not authorized! No token provided.");
+        throw new AppError(
+          401,
+          "You are not authorized! No token provided."
+        );
       }
 
       const token = authHeader.split(" ")[1];
-      const secret = process.env.JWT_SECRET || "techbasket_jwt_secret_key_2026";
 
-      const decoded = jwt.verify(token!, secret) as IAuthUser;
+      if (!token) {
+        throw new AppError(401, "Invalid authorization token!");
+      }
+
+      const secret = process.env.JWT_SECRET;
+
+      if (!secret) {
+        throw new AppError(
+          500,
+          "JWT_SECRET is not configured"
+        );
+      }
+
+      const decoded = jwt.verify(
+        token,
+        secret
+      ) as unknown as IAuthUser;
+
       req.user = decoded;
 
-      if (requiredRoles.length && !requiredRoles.includes(decoded.role)) {
-        throw new AppError(403, "You do not have permission to perform this action!");
+      if (
+        requiredRoles.length &&
+        !requiredRoles.includes(decoded.role)
+      ) {
+        throw new AppError(
+          403,
+          "You do not have permission to perform this action!"
+        );
       }
 
       next();
