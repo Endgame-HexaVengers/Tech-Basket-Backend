@@ -44,7 +44,7 @@ export const auth = (...requiredRoles: string[]) => {
       if (!secret) {
         throw new AppError(
           500,
-          "JWT_SECRET is not configured"
+          "JWT_SECRET  not configured!"
         );
       }
 
