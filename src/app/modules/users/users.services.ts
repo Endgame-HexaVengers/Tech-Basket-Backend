@@ -9,7 +9,7 @@ const getJwtSecret = () => {
   const secret = process.env.JWT_SECRET;
 
   if (!secret) {
-    throw new Error("JWT_SECRET is not configured");
+    throw new Error("JWT_SECRET is not configured and Update JWT_SECRET in .env file");
   }
 
   return secret;
