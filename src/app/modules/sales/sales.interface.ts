@@ -16,7 +16,7 @@ export interface ISaleItem {
   total: number;
 }
 
-export type PaymentMethod = "CASH" | "CARD" | "MFS" | "ONLINE";
+export type PaymentMethod = "CASH" | "CARD" | "MFS" | "ONLINE"; 
 export type PaymentStatus = "PAID" | "PARTIAL" | "DUE";
 export type SaleStatus = "COMPLETED" | "CANCELLED" | "REFUNDED";
 
